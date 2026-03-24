@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import type { JSONContent } from "@tiptap/react";
 import type { Document } from "../../types/document";
 import type { Project } from "../../types/project";
+import { ArrowLeft } from "lucide-react";
 
 interface Props {
   documentId: string;
@@ -127,21 +128,26 @@ const [content, setContent] = useState<JSONContent | undefined>(undefined);
     <div className="h-screen bg-[#0b0f1a] text-white flex flex-col">
 
       {/* HEADER */}
-      <div className="flex items-center justify-between px-6 py-3 border-b border-white/10">
+      <div className="flex items-center justify-between h-[70px] px-6 py-3 border-b border-white/10">
         
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-12">
           <button
             onClick={() => navigate(`/projects/${doc.projectId}`)}
-            className="text-gray-400 hover:text-white text-sm"
+            className="text-gray-400 hover:text-white text-md flex gap-2"
           >
-            ← Back to Projects
+            <ArrowLeft />
+             <span>Back to Projects</span>
           </button>
 
           {/* ✅ FIXED */}
-          <h1 className="text-lg font-semibold">
+          <h1 className="text-2xl font-bold opacity-50">
             {project ? project.name : "Loading..."}
           </h1>
 
+          
+        </div>
+
+        <div className="flex items-center gap-12">
           <div className="flex gap-4 ml-6 text-sm">
             <span className="text-white border-b-2 border-purple-500 pb-1">
               Documents
@@ -149,10 +155,16 @@ const [content, setContent] = useState<JSONContent | undefined>(undefined);
             <span className="text-gray-400">Shared</span>
             <span className="text-gray-400">Drafts</span>
           </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-400">
+          <span className="flex items-center gap-2
+          px-4 py-2
+          rounded-full
+          bg-white/5
+          border border-white/10
+          backdrop-blur-md
+          shadow-lg
+          text-xs
+          ">
+            <div className="w-2 h-2 rounded-full bg-indigo-400 shadow-[0_0_12px_#818cf8]" />
             {isSaving ? "Saving..." : lastSaved ? "Saved" : "Not saved"}
           </span>
 

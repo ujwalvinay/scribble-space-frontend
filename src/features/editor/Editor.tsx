@@ -50,7 +50,7 @@ export default function Editor({ content, onChange, onPublish }: EditorProps) {
     <div>
       <Toolbar editor={editor} onPublish={onPublish} />
 
-      <div className="mt-6 border border-white/20 rounded-xl p-4 bg-white/5 min-h-[300px]">
+      <div className="mt-6 border border-white/20 rounded-xl p-4 bg-white/3 min-h-[300px]">
         <EditorContent editor={editor} />
       </div>
     </div>
