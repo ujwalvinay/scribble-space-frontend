@@ -2,10 +2,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../components/layout/Layout";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getProjectDetails } from "../services/api";
+import { getProjectDetails, createDocuments } from "../services/api";
 import type { Document } from "../types/document";
 import type { Project } from "../types/project";
-import CreateDocumentModal from "../components/modals/CreateDocumentModal";
+import type { JSONContent } from "@tiptap/react";
+
 import axios from "axios";
 
 function ProjectPage() {
@@ -14,40 +15,57 @@ function ProjectPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<"unauthorized" | "failed" | null>(null);
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      setLoading(true);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
 
-      const data = await getProjectDetails(id!);
+        const data = await getProjectDetails(id!);
 
-      setProject(data.project);
-      setDocuments(data.documents);
-      setError(null);
-    } catch (err: unknown) {
-      if (axios.isAxiosError(err)) {
-        if (err.response?.status === 403) {
-          setError("unauthorized");
+        setProject(data.project);
+        setDocuments(data.documents);
+        setError(null);
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          if (err.response?.status === 403) {
+            setError("unauthorized");
+          } else {
+            setError("failed");
+          }
         } else {
           setError("failed");
         }
-      } else {
-        setError("failed");
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
+    };
+
+    fetchData();
+  }, [id]);
+
+  // ✅ Create + redirect
+  const handleCreateDocument = async () => {
+    try {
+      const newDoc = await createDocuments({
+        title: "Untitled Document",
+        content: {
+          type: "doc",
+          content: [],
+        },
+        projectId: id!,
+      });
+
+      navigate(`/documents/${newDoc._id}`);
+    } catch (err) {
+      console.error("Create document failed:", err);
     }
   };
 
-  fetchData();
-}, [id]);
-
-  // 🔹 Loading state
+  // 🔹 Loading
   if (loading) {
     return (
       <Layout>
@@ -56,7 +74,7 @@ function ProjectPage() {
     );
   }
 
-  // 🔹 Unauthorized state
+  // 🔹 Unauthorized
   if (error === "unauthorized") {
     return (
       <Layout>
@@ -79,29 +97,37 @@ function ProjectPage() {
     );
   }
 
-  // 🔹 Generic error
+  // 🔹 Error
   if (error === "failed") {
     return <Layout>Something went wrong</Layout>;
   }
 
+  // 🔹 Preview helper
+  const getPreviewText = (content: JSONContent | undefined) => {
+    try {
+      return content?.content?.[0]?.content?.[0]?.text || "No content yet";
+    } catch {
+      return "No content yet";
+    }
+  };
+
   return (
     <Layout>
       <div className="mt-4">
-        {/* Project Title */}
         <h1 className="text-[40px] font-semibold">
           {project?.name}
         </h1>
 
-        {/* Header */}
         <div className="flex justify-between">
           <p className="text-lg mt-8 opacity-25">
             Manage your development environments and deployment pipelines <br />
             from a single luminous interface.
           </p>
 
+          {/* ✅ New flow */}
           <button
             className="flex gap-2 text-lg items-center font-semibold btn-gradient max-w-64 rounded-[120px] justify-center auth-card Create-button"
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleCreateDocument}
           >
             New Document
             <Plus />
@@ -109,7 +135,6 @@ function ProjectPage() {
         </div>
       </div>
 
-      {/* 🔹 Empty state */}
       {documents.length === 0 ? (
         <div className="mt-20 text-center text-gray-400">
           <p>No documents yet</p>
@@ -118,11 +143,11 @@ function ProjectPage() {
           </p>
         </div>
       ) : (
-        /* 🔹 Documents Grid */
         <div className="grid grid-cols-3 gap-4 mt-8">
           {documents.map((doc) => (
             <div
               key={doc._id}
+              onClick={() => navigate(`/documents/${doc._id}`)}
               className="p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition cursor-pointer"
             >
               <h2 className="text-lg font-semibold text-white">
@@ -130,22 +155,12 @@ function ProjectPage() {
               </h2>
 
               <p className="text-sm text-gray-400 mt-2 line-clamp-2">
-                {doc.content}
+                {getPreviewText(doc.content)}
               </p>
             </div>
           ))}
         </div>
       )}
-
-      {/* Modal */}
-      <CreateDocumentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        projectId={id!}
-        onSuccess={(newDoc: Document) => {
-          setDocuments((prev) => [newDoc, ...prev]);
-        }}
-      />
     </Layout>
   );
 }

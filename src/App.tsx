@@ -5,6 +5,8 @@ import Dashboard from "./pages/Dashboard"
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProjectPage from "./pages/ProjectPage";
 import NotFound from "./pages/NotFound";
+import DocumentEditorWrapper from "./pages/documents/DocumentEditorWrapper";
+
 function App() {
   return (
     <Routes>
@@ -26,6 +28,14 @@ function App() {
         element={
           <ProtectedRoute>
             <ProjectPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/documents/:id"
+        element={
+          <ProtectedRoute>
+            <DocumentEditorWrapper />
           </ProtectedRoute>
         }
       />

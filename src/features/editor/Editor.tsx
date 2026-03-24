@@ -1,0 +1,58 @@
+"use client";
+
+import { useEditor, EditorContent } from "@tiptap/react";
+import type { JSONContent } from "@tiptap/react";
+import type { Editor as TiptapEditor } from "@tiptap/core";
+
+import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
+import { useEffect } from "react";
+import Toolbar from "./Toolbar";
+
+type EditorProps = {
+  content?: JSONContent;
+  onChange: (content: JSONContent) => void;
+  onPublish?: () => void;
+};
+
+export default function Editor({ content, onChange, onPublish }: EditorProps) {
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: "Type something...",
+      }),
+    ],
+    content: content || {
+      type: "doc",
+      content: [],
+    },
+    editorProps: {
+      attributes: {
+        class: "focus:outline-none min-h-[300px] text-gray-300",
+      },
+    },
+    onUpdate: ({ editor }: { editor: TiptapEditor }) => {
+      const json = editor.getJSON();
+      onChange(json);
+    },
+  });
+
+  useEffect(() => {
+    if (editor && content) {
+      editor.commands.setContent(content, { emitUpdate: false });
+    }
+  }, [editor]);
+
+  if (!editor) return null;
+
+  return (
+    <div>
+      <Toolbar editor={editor} onPublish={onPublish} />
+
+      <div className="mt-6 border border-white/20 rounded-xl p-4 bg-white/5 min-h-[300px]">
+        <EditorContent editor={editor} />
+      </div>
+    </div>
+  );
+}

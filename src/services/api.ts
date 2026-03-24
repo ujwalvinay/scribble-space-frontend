@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { JSONContent } from "@tiptap/react";
 
 const API = axios.create({
   baseURL: "http://localhost:5000/api",
@@ -65,7 +66,7 @@ export const getProjectDetails = async (id: string) => {
 // Create the projects
 export const createDocuments = async (data: {
   title: string;
-  content: string;
+  content: JSONContent;
   projectId: string;
 }) => {
   const res = await API.post("/documents", data);
