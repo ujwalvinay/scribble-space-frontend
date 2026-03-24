@@ -3,7 +3,7 @@ import { getProjects } from "../services/api";
 import { useEffect, useState, type Key } from "react";
 import Layout from "../components/layout/Layout";
 import { Plus } from "lucide-react";
-import ProjectCard from "../components/projectCard";
+import ProjectCard from "../components/cards/projectCard";
 import CreateProjectModal from "../components/modals/CreateProjectModal";
 import type { Project } from "../types/project";
 

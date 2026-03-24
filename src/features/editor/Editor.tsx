@@ -48,11 +48,25 @@ export default function Editor({ content, onChange, onPublish }: EditorProps) {
 
   return (
     <div>
-      <Toolbar editor={editor} onPublish={onPublish} />
+      
 
-      <div className="mt-6 border border-white/20 rounded-xl p-4 bg-white/3 min-h-[300px]">
+<div
+  className="
+    mt-6
+    border border-white/20
+    rounded-xl
+    p-4
+    bg-white/1
+    h-[75vh]
+    overflow-y-auto
+    custom-scrollbar
+    mb-4
+  "
+>
         <EditorContent editor={editor} />
+        
       </div>
+      <Toolbar editor={editor} onPublish={onPublish} />
     </div>
   );
 }

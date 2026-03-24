@@ -1,12 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../components/layout/Layout";
-import { Plus } from "lucide-react";
+import { Plus, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getProjectDetails, createDocuments } from "../services/api";
 import type { Document } from "../types/document";
 import type { Project } from "../types/project";
 import type { JSONContent } from "@tiptap/react";
-
+import DocumentCard from "../components/cards/documentCard";
 import axios from "axios";
 
 function ProjectPage() {
@@ -15,6 +15,8 @@ function ProjectPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [documents, setDocuments] = useState<Document[]>([]);
+
+  
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<"unauthorized" | "failed" | null>(null);
@@ -103,12 +105,24 @@ function ProjectPage() {
   }
 
   // 🔹 Preview helper
-  const getPreviewText = (content: JSONContent | undefined) => {
-    try {
-      return content?.content?.[0]?.content?.[0]?.text || "No content yet";
-    } catch {
-      return "No content yet";
-    }
+  const getPreviewText = (content: JSONContent | undefined): string => {
+    if (!content) return "No content yet";
+
+    let text = "";
+
+    const extractText = (node: JSONContent) => {
+      if (node.type === "text" && node.text) {
+        text += node.text + " ";
+      }
+
+      if (node.content) {
+        node.content.forEach(extractText);
+      }
+    };
+
+    extractText(content);
+
+    return text.trim().slice(0, 35)+ " ..." || "No content yet";
   };
 
   return (
@@ -125,13 +139,22 @@ function ProjectPage() {
           </p>
 
           {/* ✅ New flow */}
-          <button
-            className="flex gap-2 text-lg items-center font-semibold btn-gradient max-w-64 rounded-[120px] justify-center auth-card Create-button"
-            onClick={handleCreateDocument}
-          >
-            New Document
-            <Plus />
-          </button>
+          <div className="flex items-end gap-4">
+            <button
+              onClick={() => navigate(`/projects/${id}/members`)}
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition"
+            >
+              <Settings size={18} />
+            </button>
+
+            <button
+              className="flex gap-2 text-lg items-center font-semibold btn-gradient max-w-64 rounded-[120px] justify-center auth-card Create-button"
+              onClick={handleCreateDocument}
+            >
+              New Document
+              <Plus />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -143,24 +166,24 @@ function ProjectPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-5 gap-4 mt-8">
           {documents.map((doc) => (
             <div
               key={doc._id}
               onClick={() => navigate(`/documents/${doc._id}`)}
-              className="p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition cursor-pointer"
             >
-              <h2 className="text-lg font-semibold text-white">
-                {doc.title}
-              </h2>
-
-              <p className="text-sm text-gray-400 mt-2 line-clamp-2">
-                {getPreviewText(doc.content)}
-              </p>
+              <DocumentCard 
+                  key={doc._id}
+                  id={doc._id}
+                  title={doc.title}
+                  description={getPreviewText(doc.content)}
+                  updatedAt={doc.updatedAt}
+              />
             </div>
           ))}
         </div>
       )}
+
     </Layout>
   );
 }

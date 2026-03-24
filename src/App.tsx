@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ProjectPage from "./pages/ProjectPage";
 import NotFound from "./pages/NotFound";
 import DocumentEditorWrapper from "./pages/documents/DocumentEditorWrapper";
+import ProjectMembersPage from "./pages/ProjectMembersPage";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route path="/projects/:id/members" element={<ProtectedRoute><ProjectMembersPage /></ProtectedRoute>} />
       {/* 🔥 Catch-all route */}
       <Route path="*" element={<NotFound />} />
     </Routes>

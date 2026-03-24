@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, Folder, Settings } from "lucide-react";
 import type { User } from "../../types/user";
-
+import logo from '/logo.png'
 type SidebarProps = {
   user: User | null;
 };
@@ -20,7 +20,7 @@ function Sidebar({ user }: SidebarProps) {
       {/* Top */}
       <div>
         <div className="mb-8">
-            <img src="logo.png"/>
+            <img src={logo}/>
         </div>
 
         <nav className="flex flex-col gap-2">
@@ -50,7 +50,7 @@ function Sidebar({ user }: SidebarProps) {
 
         <div>
           <p className="text-white font-medium">
-            {user?.email || "Loading..."}
+            {user?.email ? user.email.split("@")[0] : "Loading..."}
           </p>
           <p className="text-xs text-gray-400">Pro Plan</p>
         </div>

@@ -124,38 +124,37 @@ const [content, setContent] = useState<JSONContent | undefined>(undefined);
     return <div className="p-6 text-red-400">Document not found</div>;
   }
 
-  return (
-    <div className="h-screen bg-[#0b0f1a] text-white flex flex-col">
+return (
+  <div className="h-screen bg-[#0b0f1a] text-white flex flex-col overflow-hidden">
 
-      {/* HEADER */}
-      <div className="flex items-center justify-between h-[70px] px-6 py-3 border-b border-white/10">
-        
-        <div className="flex items-center gap-12">
-          <button
-            onClick={() => navigate(`/projects/${doc.projectId}`)}
-            className="text-gray-400 hover:text-white text-md flex gap-2"
-          >
-            <ArrowLeft />
-             <span>Back to Projects</span>
-          </button>
+    {/* HEADER */}
+    <div className="flex items-center justify-between h-[70px] px-6 py-3 border-b border-white/10">
+      
+      <div className="flex items-center gap-12">
+        <button
+          onClick={() => navigate(`/projects/${doc.projectId}`)}
+          className="text-gray-400 hover:text-white text-md flex gap-2"
+        >
+          <ArrowLeft />
+          <span>Back to Projects</span>
+        </button>
 
-          {/* ✅ FIXED */}
-          <h1 className="text-2xl font-bold opacity-50">
-            {project ? project.name : "Loading..."}
-          </h1>
+        <h1 className="text-2xl font-bold opacity-50">
+          {project ? project.name : "Loading..."}
+        </h1>
+      </div>
 
-          
+      <div className="flex items-center gap-12">
+        <div className="flex gap-4 ml-6 text-sm">
+          <span className="text-white border-b-2 border-purple-500 pb-1">
+            Documents
+          </span>
+          <span className="text-gray-400">Shared</span>
+          <span className="text-gray-400">Drafts</span>
         </div>
 
-        <div className="flex items-center gap-12">
-          <div className="flex gap-4 ml-6 text-sm">
-            <span className="text-white border-b-2 border-purple-500 pb-1">
-              Documents
-            </span>
-            <span className="text-gray-400">Shared</span>
-            <span className="text-gray-400">Drafts</span>
-          </div>
-          <span className="flex items-center gap-2
+        <span className="
+          flex items-center gap-2
           px-4 py-2
           rounded-full
           bg-white/5
@@ -163,37 +162,40 @@ const [content, setContent] = useState<JSONContent | undefined>(undefined);
           backdrop-blur-md
           shadow-lg
           text-xs
-          ">
-            <div className="w-2 h-2 rounded-full bg-indigo-400 shadow-[0_0_12px_#818cf8]" />
-            {isSaving ? "Saving..." : lastSaved ? "Saved" : "Not saved"}
-          </span>
+        ">
+          <div className="w-2 h-2 rounded-full bg-indigo-400 shadow-[0_0_12px_#818cf8]" />
+          {isSaving ? "Saving..." : lastSaved ? "Saved" : "Not saved"}
+        </span>
 
-          <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-sm">
-            U
-          </div>
+        <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-sm">
+          U
         </div>
       </div>
+    </div>
 
-      {/* TITLE */}
-      <div className="px-10 pt-8 flex justify-center">
+    {/* TITLE */}
+    <div className="px-10 pt-8 flex ">
+      <div className="max-w-[calc(100vw-5%)]  px-6">
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Untitled Document"
-          className="w-full max-w-3xl text-4xl font-bold bg-transparent outline-none placeholder:text-gray-500"
+          className="w-full text-4xl font-bold bg-transparent outline-none placeholder:text-gray-500"
         />
       </div>
+    </div>
 
-      {/* EDITOR */}
-      <div className="flex-1 overflow-y-auto flex justify-center">
-        <div className="w-full max-w-3xl px-6 py-6">
-          <Editor
-            content={content}
-            onChange={setContent}
-            onPublish={handlePublish} // ✅ wired
-          />
-        </div>
+    {/* EDITOR */}
+    <div className="flex-1 flex justify-center px-6 pb">
+      <div className="max-w-[calc(100vw-5%)]">
+        <Editor
+          content={content}
+          onChange={setContent}
+          onPublish={handlePublish}
+        />
       </div>
     </div>
-  );
+
+  </div>
+);
 }
