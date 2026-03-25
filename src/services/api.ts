@@ -2,7 +2,7 @@ import axios from "axios";
 import type { JSONContent } from "@tiptap/react";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://scribble-space-backend-4ll2.onrender.com/",
 });
 
 // Attach token automatically
