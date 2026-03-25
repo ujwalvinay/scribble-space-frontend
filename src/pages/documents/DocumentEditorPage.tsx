@@ -8,6 +8,8 @@ import type { JSONContent } from "@tiptap/react";
 import type { Document } from "../../types/document";
 import type { Project } from "../../types/project";
 import { ArrowLeft } from "lucide-react";
+import { getMe } from "../../services/api";
+import type { Member } from "../../types/member";
 
 interface Props {
   documentId: string;
@@ -15,11 +17,14 @@ interface Props {
 
 export default function DocumentEditorPage({ documentId }: Props) {
   const navigate = useNavigate();
+  
 
 const [doc, setDoc] = useState<Document | null>(null);
 const [project, setProject] = useState<Project | null>(null);
 const [content, setContent] = useState<JSONContent | undefined>(undefined);
   const [title, setTitle] = useState("");
+  const [role, setRole] = useState<string | null>(null);
+
 
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -32,6 +37,7 @@ const [content, setContent] = useState<JSONContent | undefined>(undefined);
         setLoading(true);
 
         const data = await getDocument(documentId);
+        const user = await getMe();
 
         // ✅ Ensure correct structure
         if (!data || !data.projectId) {
@@ -51,6 +57,12 @@ const [content, setContent] = useState<JSONContent | undefined>(undefined);
 
         // ✅ Fetch project correctly
         const projectRes = await getProjectDetails(data.projectId);
+        const currentUser = projectRes.members.find(
+          (m: Member) => m.userId === user.id
+        );
+
+        setRole(currentUser?.role || null);
+        setRole(currentUser?.role || null);
 
         // 🔥 IMPORTANT FIX
         setProject(projectRes.project);
@@ -187,11 +199,12 @@ return (
 
     {/* EDITOR */}
     <div className="flex-1 flex justify-center px-6 pb">
-      <div className="max-w-[calc(100vw-5%)]">
+      <div className="w-full max-w-[1900px]">   {/* ✅ FIX */}
         <Editor
           content={content}
           onChange={setContent}
           onPublish={handlePublish}
+          editable={role ? role !== "viewer" : false}
         />
       </div>
     </div>

@@ -13,10 +13,12 @@ type EditorProps = {
   content?: JSONContent;
   onChange: (content: JSONContent) => void;
   onPublish?: () => void;
+  editable?: boolean;
 };
 
-export default function Editor({ content, onChange, onPublish }: EditorProps) {
+export default function Editor({ content, onChange, onPublish,editable }: EditorProps) {
   const editor = useEditor({
+    editable: editable !== false,
     extensions: [
       StarterKit,
       Placeholder.configure({
@@ -52,6 +54,7 @@ export default function Editor({ content, onChange, onPublish }: EditorProps) {
 
 <div
   className="
+    w-full              /* ✅ ADD THIS */
     mt-6
     border border-white/20
     rounded-xl
@@ -66,7 +69,9 @@ export default function Editor({ content, onChange, onPublish }: EditorProps) {
         <EditorContent editor={editor} />
         
       </div>
-      <Toolbar editor={editor} onPublish={onPublish} />
+      {editable !== false && (
+        <Toolbar editor={editor} onPublish={onPublish} />
+      )}
     </div>
   );
 }

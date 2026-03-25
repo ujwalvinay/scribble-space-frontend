@@ -1,6 +1,7 @@
 export type MemberRole = "owner" | "editor" | "viewer";
 
-export interface Member {
+export type Member = {
+  userId: string;
   email: string;
-  role: MemberRole;
-}
+  role: "owner" | "editor" | "viewer";
+};
