@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createDocuments } from "../../services/api";
 import type { Document } from "../../types/document";
+import type { JSONContent } from "@tiptap/react";
 
 type Props = {
   isOpen: boolean;
@@ -9,9 +10,13 @@ type Props = {
   projectId: string;
 };
 
+const emptyDoc: JSONContent = {
+  type: "doc",
+  content: [],
+};
+
 function CreateDocumentModal({ isOpen, onClose, onSuccess, projectId }: Props) {
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,14 +27,13 @@ function CreateDocumentModal({ isOpen, onClose, onSuccess, projectId }: Props) {
 
       const newDocument = await createDocuments({
         title,
-        content,
+        content: emptyDoc, // ✅ FIX
         projectId,
       });
 
       onSuccess(newDocument);
 
       setTitle("");
-      setContent("");
       onClose();
     } catch (err) {
       console.error("Create Document Error:", err);
@@ -56,12 +60,7 @@ function CreateDocumentModal({ isOpen, onClose, onSuccess, projectId }: Props) {
             required
           />
 
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Write content..."
-            className="input-field"
-          />
+          {/* ❌ Removed textarea */}
 
           <button disabled={loading} className="btn-gradient">
             {loading ? "Creating..." : "Create"}
