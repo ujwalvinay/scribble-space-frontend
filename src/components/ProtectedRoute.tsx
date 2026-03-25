@@ -1,7 +1,7 @@
-import type { JSX } from "react";
 import { Navigate } from "react-router-dom";
+import type { ReactNode } from "react";
 
-function ProtectedRoute({ children }: { children: JSX.Element }) {
+function ProtectedRoute({ children }: { children: ReactNode }) {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -10,4 +10,5 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
 
   return children;
 }
-export default ProtectedRoute
+
+export default ProtectedRoute;
