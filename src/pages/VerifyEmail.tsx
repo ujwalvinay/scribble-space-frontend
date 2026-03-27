@@ -1,12 +1,21 @@
 import bgImage from "../assets/bg.png";
 import { Mail } from "lucide-react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
 import { verifySignupOtpRequest, resendSignupOtpRequest } from "../services/api";
+
+type VerifyLocationState = { verifyNote?: string };
 
 function VerifyEmail() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const verifyNote = (location.state as VerifyLocationState | null)?.verifyNote;
   const emailParam = searchParams.get("email")?.trim() || "";
 
   const [email, setEmail] = useState(emailParam);
@@ -97,6 +106,12 @@ function VerifyEmail() {
           We sent a 6-digit code to your email. Enter it below to activate your
           account.
         </p>
+
+        {verifyNote && (
+          <div className="mb-4 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-100 px-4 py-3 text-sm">
+            {verifyNote}
+          </div>
+        )}
 
         {success && (
           <div className="mb-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 px-4 py-3 text-sm">

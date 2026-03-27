@@ -21,9 +21,21 @@ function Signup() {
   };
 
   try {
-    await signupUser(payload);
+    const data = (await signupUser(payload)) as {
+      email?: string;
+      emailSent?: boolean;
+      message?: string;
+    };
     navigate(
-      `/verify-email?email=${encodeURIComponent(payload.email.toLowerCase())}`
+      `/verify-email?email=${encodeURIComponent(
+        (data.email || payload.email).toLowerCase()
+      )}`,
+      {
+        state:
+          data.emailSent === false
+            ? { verifyNote: data.message }
+            : undefined,
+      }
     );
   } catch (error: unknown) {
     const msg =
