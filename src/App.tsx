@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import VerifyEmail from "./pages/VerifyEmail";
 import Dashboard from "./pages/Dashboard"
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProjectPage from "./pages/ProjectPage";
@@ -14,6 +15,7 @@ function App() {
       {/* Public */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
 
       {/* Protected Home */}
       <Route

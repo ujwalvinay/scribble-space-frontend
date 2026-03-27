@@ -9,8 +9,11 @@ function Signup() {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [formError, setFormError] = useState<string | null>(null);
+
   const handleSignup = async (e: React.FormEvent) => {
   e.preventDefault();
+  setFormError(null);
 
   const payload = {
     email: email.trim(),
@@ -19,11 +22,16 @@ function Signup() {
 
   try {
     await signupUser(payload);
-
-    // Redirect to login
-    navigate("/login");
-  } catch (error: any) {
-    console.log(error.response?.data || error.message);
+    navigate(
+      `/verify-email?email=${encodeURIComponent(payload.email.toLowerCase())}`
+    );
+  } catch (error: unknown) {
+    const msg =
+      error && typeof error === "object" && "response" in error
+        ? (error as { response?: { data?: { error?: string } } }).response?.data
+            ?.error
+        : null;
+    setFormError(msg || "Something went wrong. Try again.");
   }
 };
 
@@ -68,6 +76,11 @@ function Signup() {
                     <div className="flex-grow h-px bg-white/20"></div>
             </div>
             <form onSubmit={handleSignup}>
+              {formError && (
+                <div className="mb-4 rounded-xl bg-red-500/20 border border-red-500/40 text-red-200 px-4 py-3 text-sm">
+                  {formError}
+                </div>
+              )}
               <label className="form-label">EMAIL ADDRESS</label>
                 <div className="input-wrapper mb-4">
                     <input
