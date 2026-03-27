@@ -36,19 +36,6 @@ export const signupUser = async (data: {
   return res.data;
 };
 
-export const verifySignupOtpRequest = async (data: {
-  email: string;
-  otp: string;
-}) => {
-  const res = await API.post("/auth/verify-signup-otp", data);
-  return res.data;
-};
-
-export const resendSignupOtpRequest = async (data: { email: string }) => {
-  const res = await API.post("/auth/resend-signup-otp", data);
-  return res.data;
-};
-
 // Get the current user
 export const getMe = async () => {
   const res = await API.get("/auth/me");

@@ -30,19 +30,7 @@ function Login() {
             localStorage.setItem("token", data.token);
             navigate("/");
         } catch (error: unknown) {
-            const ax = error as {
-                response?: { status?: number; data?: { needsVerification?: boolean; email?: string } };
-            };
-            if (
-                ax.response?.status === 403 &&
-                ax.response.data?.needsVerification &&
-                ax.response.data?.email
-            ) {
-                navigate(
-                    `/verify-email?email=${encodeURIComponent(ax.response.data.email)}`
-                );
-                return;
-            }
+            const ax = error as { response?: { data?: unknown } };
             console.log("ERROR FULL:", error);
             console.log("ERROR DATA:", ax.response?.data);
         }

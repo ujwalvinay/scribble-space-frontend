@@ -21,22 +21,9 @@ function Signup() {
   };
 
   try {
-    const data = (await signupUser(payload)) as {
-      email?: string;
-      emailSent?: boolean;
-      message?: string;
-    };
-    navigate(
-      `/verify-email?email=${encodeURIComponent(
-        (data.email || payload.email).toLowerCase()
-      )}`,
-      {
-        state:
-          data.emailSent === false
-            ? { verifyNote: data.message }
-            : undefined,
-      }
-    );
+    const data = (await signupUser(payload)) as { token: string };
+    localStorage.setItem("token", data.token);
+    navigate("/");
   } catch (error: unknown) {
     const msg =
       error && typeof error === "object" && "response" in error
